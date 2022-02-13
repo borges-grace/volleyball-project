@@ -1,6 +1,5 @@
 <template>
-  <!-- <v-container class="fill-height"> -->
-  <v-card flat tile>
+  <v-card flat tile color="transparent">
     <!-- Welcome -->
     <v-row align="center" align-content="center" justify="center">
       <v-card-title class="text-h1"> Welcome! </v-card-title>
@@ -16,7 +15,7 @@
       <!-- School name -->
       <v-row align="center" justify="center">
         <v-col cols="3" class="text-right text-h5">
-          <span>School name</span>
+          School name <span class="red--text">*</span>
         </v-col>
         <v-col cols="5">
           <v-text-field v-model="schoolName" />
@@ -26,7 +25,7 @@
       <!-- Mascot -->
       <v-row align="center" justify="center">
         <v-col cols="3" class="text-right text-h5">
-          <span>Mascot</span>
+          Mascot <span class="red--text">*</span>
         </v-col>
         <v-col cols="5">
           <v-text-field v-model="schoolMascot" />
@@ -36,10 +35,13 @@
       <!-- Primary color -->
       <v-row align="center" justify="center">
         <v-col cols="3" class="text-right text-h5">
-          <span>Primary color</span>
+          Primary color <span class="red--text">*</span>
         </v-col>
         <v-col cols="4">
-          <v-text-field v-model="primaryColor" />
+          <v-text-field
+            v-model="primaryColor"
+            @click="pickerVisible = !pickerVisible"
+          />
         </v-col>
         <v-col cols="1">
           <v-btn
@@ -64,16 +66,22 @@
         </v-col>
       </v-row>
     </v-card-text>
-    <v-card-actions class="justify-end">
-      <v-btn text outlined> Continue </v-btn>
-    </v-card-actions>
+    <v-row>
+      <v-col cols="10">
+        <v-card-actions class="d-flex justify-end">
+          <v-btn text outlined :disabled="disableContinue" @click="setValues">
+            Continue
+          </v-btn>
+        </v-card-actions>
+      </v-col>
+    </v-row>
   </v-card>
-  <!-- </v-container> -->
 </template>
 
 <script>
+import { mapActions } from "vuex";
 export default {
-  name: "Home",
+  name: "SchoolView",
 
   components: {},
 
@@ -81,18 +89,31 @@ export default {
     return {
       schoolName: "",
       schoolMascot: "",
-      primaryColor: "#FF0000",
+      primaryColor: "#4B2682",
       pickerVisible: false,
     };
   },
 
   computed: {
-    disableSave() {
+    disableContinue() {
       return (
-        !this.schoolName.length &&
-        !this.schoolMascot.length &&
+        !this.schoolName.length ||
+        !this.schoolMascot.length ||
         !this.primaryColor.length
       );
+    },
+  },
+
+  methods: {
+    ...mapActions("school", ["putSchool"]),
+
+    async setValues() {
+      let school = {
+        Name: this.schoolName,
+        Mascot: this.schoolMascot,
+        Color: this.primaryColor,
+      };
+      await this.putSchool(school);
     },
   },
 };
