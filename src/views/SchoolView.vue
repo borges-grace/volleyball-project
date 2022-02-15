@@ -69,7 +69,13 @@
     <v-row>
       <v-col cols="10">
         <v-card-actions class="d-flex justify-end">
-          <v-btn text outlined :disabled="disableContinue" @click="setValues">
+          <v-btn
+            text
+            outlined
+            :disabled="disableContinue"
+            @click="setValues"
+            to="/Team"
+          >
             Continue
           </v-btn>
         </v-card-actions>
