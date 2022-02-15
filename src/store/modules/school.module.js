@@ -14,13 +14,21 @@ const actions = {
 const mutations = {
   [PUT_SCHOOL](state, school) {
     school.Acronym = helpers.findAcronym(school);
+    school.MascotPlural = helpers.makeMascotPlural(school.Mascot);
+    school.MascotSingular = helpers.makeMascotSingular(school.Mascot);
     state.data = { ...school };
+    localStorage.setItem("school", JSON.stringify(school));
   },
 };
 
 const getters = {
   getSchool: (state) => {
-    return state.data;
+    if (state.data) {
+      return state.data;
+    } else {
+      let school = localStorage.getItem("school");
+      return JSON.parse(school);
+    }
   },
 };
 
@@ -39,6 +47,22 @@ const helpers = {
     });
     acronym = acronym.toUpperCase();
     return acronym;
+  },
+
+  makeMascotPlural: (mascot) => {
+    if (mascot.endsWith("s")) {
+      return mascot;
+    } else {
+      return mascot + "s";
+    }
+  },
+
+  makeMascotSingular: (mascot) => {
+    if (mascot.endsWith("s")) {
+      return mascot.substring(0, mascot.length - 1);
+    } else {
+      return mascot + "s";
+    }
   },
 };
 
