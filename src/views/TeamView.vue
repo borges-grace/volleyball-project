@@ -7,18 +7,20 @@
       </v-col>
       <v-col cols="1" class="pb-0">
         <v-card-subtitle class="text-h5 pb-0 pt-11">
-          {{ rosterSize }}
+          {{ cRosterSize }}
         </v-card-subtitle>
       </v-col>
     </v-row>
     <v-row>
+
+      <!-- Add athlete card -->
       <v-col cols="5">
         <v-card color="transparent" flat>
           <v-card-title class="text-h4"> Add Athlete </v-card-title>
           <v-card-text>
             <!-- First name -->
             <v-row class="py-0">
-              <v-col cols="8" class="py-0">
+              <v-col :cols="cLargeRosterCols" class="py-0">
                 <v-text-field
                   outlined
                   filled
@@ -31,7 +33,7 @@
 
             <!-- Last name -->
             <v-row class="py-0">
-              <v-col cols="8" class="py-0">
+              <v-col :cols="cLargeRosterCols" class="py-0">
                 <v-text-field
                   outlined
                   filled
@@ -58,7 +60,7 @@
 
             <!-- Position and rank -->
             <v-row class="py-0">
-              <v-col class="py-0" cols="8">
+              <v-col class="py-0" :cols="cLargeRosterCols">
                 <v-select
                   outlined
                   filled
@@ -84,14 +86,14 @@
 
             <!-- Height -->
             <v-row class="py-0">
-              <v-col class="py-0" cols="8">
+              <v-col class="py-0" :cols="cLargeRosterCols">
                 <v-select outlined filled dense label="Height"> </v-select>
               </v-col>
             </v-row>
 
             <!-- Class -->
             <v-row class="py-0">
-              <v-col class="py-0" cols="8">
+              <v-col class="py-0" :cols="cLargeRosterCols">
                 <v-select
                   outlined
                   filled
@@ -106,11 +108,13 @@
             </v-row>
           </v-card-text>
           <v-card-actions class="d-flex justify-end pr-5">
-            <v-btn @click="addAthlete">Add</v-btn>
+            <v-btn @click="addAthlete" :disabled="cAddDisabled">Add</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
       <v-divider vertical />
+
+      <!-- Roster card -->
       <v-col>
         <v-card color="transparent" flat>
           <v-card-text>
@@ -132,6 +136,11 @@
         </v-card>
       </v-col>
     </v-row>
+    <v-card-actions class="d-flex justify-end">
+      <v-btn :disabled="cContinueDisabled">
+        Continue
+      </v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
@@ -181,9 +190,21 @@ export default {
   computed: {
     ...mapGetters("school", ["getSchool"]),
 
-    rosterSize() {
+    cRosterSize() {
       return this.roster.length;
     },
+
+    cLargeRosterCols() {
+      return this.$vuetify.breakpoint.mdAndUp ? 8 : 12
+    },
+
+    cAddDisabled() {
+      return this.athlete.FirstName.length == 0 || this.athlete.LastName.length == 0;
+    },
+
+    cContinueDisabled() {
+      return this.cRosterSize == 0;
+    }
   },
 
   created() {

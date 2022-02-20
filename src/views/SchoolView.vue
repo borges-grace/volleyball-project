@@ -72,7 +72,7 @@
           <v-btn
             text
             outlined
-            :disabled="disableContinue"
+            :disabled="cDisableContinue"
             @click="setValues"
             to="/Team"
           >
@@ -101,7 +101,7 @@ export default {
   },
 
   computed: {
-    disableContinue() {
+    cDisableContinue() {
       return (
         !this.schoolName.length ||
         !this.schoolMascot.length ||
