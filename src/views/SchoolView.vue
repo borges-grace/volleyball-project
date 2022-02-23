@@ -111,7 +111,7 @@ export default {
   },
 
   methods: {
-    ...mapActions("school", ["putSchool"]),
+    ...mapActions("school", ["postSchool"]),
 
     async setValues() {
       let school = {
@@ -119,7 +119,7 @@ export default {
         Mascot: this.schoolMascot,
         Color: this.primaryColor,
       };
-      await this.putSchool(school);
+      await this.postSchool(school);
     },
   },
 };

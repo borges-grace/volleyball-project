@@ -1,18 +1,19 @@
 // export the mutations
-export let [PUT_SCHOOL] = ["putSchool"];
+export let [POST_SCHOOL] = ["postSchool"];
 
 const state = {
   school: { isLoading: false, data: {}, errMsg: null },
 };
 
 const actions = {
-  putSchool: ({ commit }, school) => {
-    commit(PUT_SCHOOL, school);
+  postSchool: ({ commit }, school) => {
+    // will implement api calls when I build the back end
+    commit(POST_SCHOOL, school);
   },
 };
 
 const mutations = {
-  [PUT_SCHOOL](state, school) {
+  [POST_SCHOOL]: (state, school) => {
     school.Acronym = helpers.findAcronym(school);
     school.MascotPlural = helpers.makeMascotPlural(school.Mascot);
     school.MascotSingular = helpers.makeMascotSingular(school.Mascot);
