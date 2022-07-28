@@ -21,7 +21,7 @@
           <v-card-text>
             <!-- First name -->
             <v-row class="py-0">
-              <v-col cols="8" class="py-0">
+              <v-col cols="8" class="py-0 mr-0">
                 <v-text-field
                   v-model="athlete.FirstName"
                   dense
@@ -34,7 +34,7 @@
 
             <!-- Last name -->
             <v-row class="py-0">
-              <v-col cols="8" class="py-0">
+              <v-col cols="8" class="py-0 mr-0">
                 <v-text-field
                   v-model="athlete.LastName"
                   dense
@@ -43,6 +43,7 @@
                   label="Last Name"
                 />
               </v-col>
+              <span class="red--text pl-0">*</span>
             </v-row>
 
             <!-- Jersey number -->
@@ -57,6 +58,7 @@
                   label="Jersey Number"
                 />
               </v-col>
+              <span class="red--text pl-0">*</span>
             </v-row>
 
             <!-- Position and rank -->
@@ -102,7 +104,7 @@
             </v-row>
           </v-card-text>
           <v-card-actions class="d-flex justify-end pr-5">
-            <v-btn @click="addAthlete">Add</v-btn>
+            <v-btn :disabled="disableAddButton" @click="addAthlete">Add</v-btn>
           </v-card-actions>
         </v-card>
       </v-col>
@@ -123,7 +125,8 @@
                 {{ item.LastName }}, {{ item.FirstName }}
               </template>
               <template #[`item.Position`]="{ item }">
-                {{ item.Position.acronym }}{{ item.Rank }}
+                {{ item.Position ? item.Position.Acronym : ""
+                }}{{ item.Position ? item.Rank : "" }}
               </template>
               <template #[`item.Modify`]="{ item }">
                 <v-icon @click="modifyPlayer(item)">mdi-pencil-outline</v-icon>
@@ -133,11 +136,15 @@
         </v-card>
       </v-col>
     </v-row>
+
+    <v-card-actions v-if="rosterSize > 0" class="d-flex justify-end py-0">
+      <v-btn @click="submitRoster()">Submit Roster</v-btn>
+    </v-card-actions>
   </v-card>
 </template>
 
 <script>
-import { mapGetters } from "vuex";
+import { mapActions, mapGetters } from "vuex";
 export default {
   name: "TeamView",
 
@@ -180,9 +187,16 @@ export default {
 
   computed: {
     ...mapGetters("school", ["getSchool"]),
+    ...mapGetters("team", ["getTeam"]),
 
+    // returns how many people have been put into the team roster so far
     rosterSize() {
       return this.roster.length;
+    },
+
+    // disables the add button if we don't have the bare minumum
+    disableAddButton() {
+      return !this.athlete.LastName || !this.athlete.JerseyNumber;
     },
   },
 
@@ -191,6 +205,8 @@ export default {
   },
 
   methods: {
+    ...mapActions("team", ["postTeam"]),
+
     initialize() {
       if (!this.getSchool) {
         this.$router.push("/");
@@ -234,6 +250,13 @@ export default {
         Rank: player.Rank,
         Class: player.Class,
       };
+    },
+
+    /**
+     * creates the team record in the mapState
+     */
+    submitRoster() {
+      this.postTeam(this.roster);
     },
   },
 };
