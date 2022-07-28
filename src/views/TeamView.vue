@@ -11,20 +11,23 @@
         </v-card-subtitle>
       </v-col>
     </v-row>
+
+    <!-- Body -->
     <v-row>
-      <v-col cols="5">
+      <!-- Enter player info -->
+      <v-col cols="5" class="ml-2">
         <v-card color="transparent" flat>
-          <v-card-title class="text-h4"> Add Athlete </v-card-title>
+          <v-card-title class="text-h5"> Add player </v-card-title>
           <v-card-text>
             <!-- First name -->
             <v-row class="py-0">
               <v-col cols="8" class="py-0">
                 <v-text-field
-                  outlined
-                  filled
-                  dense
-                  label="First Name"
                   v-model="athlete.FirstName"
+                  dense
+                  filled
+                  outlined
+                  label="First Name"
                 />
               </v-col>
             </v-row>
@@ -33,11 +36,11 @@
             <v-row class="py-0">
               <v-col cols="8" class="py-0">
                 <v-text-field
-                  outlined
-                  filled
-                  dense
-                  label="Last Name"
                   v-model="athlete.LastName"
+                  dense
+                  filled
+                  outlined
+                  label="Last Name"
                 />
               </v-col>
             </v-row>
@@ -46,12 +49,12 @@
             <v-row class="py-0">
               <v-col class="py-0" cols="4">
                 <v-text-field
-                  outlined
-                  filled
-                  dense
-                  label="Jersey Number"
-                  type="number"
                   v-model="athlete.JerseyNumber"
+                  dense
+                  filled
+                  outlined
+                  type="number"
+                  label="Jersey Number"
                 />
               </v-col>
             </v-row>
@@ -60,32 +63,25 @@
             <v-row class="py-0">
               <v-col class="py-0" cols="8">
                 <v-select
-                  outlined
-                  filled
-                  dense
-                  label="Position"
                   v-model="athlete.Position"
-                  :items="positions"
-                  item-text="position"
+                  dense
+                  filled
+                  outlined
                   return-object
+                  label="Position"
+                  item-text="position"
+                  :items="positions"
                 />
               </v-col>
               <v-col class="py-0" cols="4">
                 <v-text-field
-                  outlined
-                  filled
-                  dense
-                  label="Rank"
                   v-model="athlete.Rank"
+                  dense
+                  filled
+                  outlined
+                  label="Rank"
                   type="number"
                 />
-              </v-col>
-            </v-row>
-
-            <!-- Height -->
-            <v-row class="py-0">
-              <v-col class="py-0" cols="8">
-                <v-select outlined filled dense label="Height"> </v-select>
               </v-col>
             </v-row>
 
@@ -93,13 +89,13 @@
             <v-row class="py-0">
               <v-col class="py-0" cols="8">
                 <v-select
-                  outlined
-                  filled
-                  dense
-                  label="Class"
                   v-model="athlete.Class"
-                  :items="classes"
+                  dense
+                  filled
+                  outlined
+                  label="Class"
                   item-text="class"
+                  :items="classes"
                 >
                 </v-select>
               </v-col>
@@ -111,6 +107,8 @@
         </v-card>
       </v-col>
       <v-divider vertical />
+
+      <!-- Table of athletes -->
       <v-col>
         <v-card color="transparent" flat>
           <v-card-text>
@@ -126,6 +124,9 @@
               </template>
               <template #[`item.Position`]="{ item }">
                 {{ item.Position.acronym }}{{ item.Rank }}
+              </template>
+              <template #[`item.Modify`]="{ item }">
+                <v-icon @click="modifyPlayer(item)">mdi-pencil-outline</v-icon>
               </template>
             </v-data-table>
           </v-card-text>
@@ -149,7 +150,6 @@ export default {
         JerseyNumber: 0,
         Position: null,
         Rank: 0,
-        Height: null,
         Class: null,
       },
       roster: [],
@@ -172,8 +172,8 @@ export default {
         { text: "Name", value: "FullName" },
         { text: "Number", value: "JerseyNumber" },
         { text: "Position", value: "Position" },
-        { text: "Height", value: "Height" },
         { text: "Class", value: "Class" },
+        { text: "", value: "Modify" },
       ],
     };
   },
@@ -198,8 +198,11 @@ export default {
       this.header = this.getSchool?.MascotSingular + "'s Roster";
     },
 
+    /**
+     * adds an athlete to the roster table and
+     * resets the values in the add athlete section
+     */
     addAthlete() {
-      console.log("athlete", this.athlete);
       this.roster.push(this.athlete);
       this.athlete = {
         FirstName: "",
@@ -207,8 +210,29 @@ export default {
         JerseyNumber: 0,
         Position: null,
         Rank: 0,
-        Height: null,
         Class: null,
+      };
+    },
+
+    /**
+     * removes the user from the roster and puts all of
+     * their values in the add athlete section so it can
+     * be modified
+     */
+    modifyPlayer(player) {
+      let removePlayer = this.roster.findIndex(
+        (athlete) =>
+          athlete.JerseyNumber == player.JerseyNumber &&
+          athlete.FirstName == player.FirstName
+      );
+      this.roster.splice(removePlayer, 1);
+      this.athlete = {
+        FirstName: player.FirstName,
+        LastName: player.LastName,
+        JerseyNumber: player.JerseyNumber,
+        Position: player.Position,
+        Rank: player.Rank,
+        Class: player.Class,
       };
     },
   },
