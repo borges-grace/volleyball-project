@@ -1,30 +1,28 @@
-// export the mutations
-export let [PUT_SCHOOL] = ["putSchool"];
-
 const state = {
   school: { isLoading: false, data: {}, errMsg: null },
 };
 
 const actions = {
   putSchool: ({ commit }, school) => {
-    commit(PUT_SCHOOL, school);
+    commit("putSchool", school);
   },
 };
 
 const mutations = {
-  [PUT_SCHOOL](state, school) {
+  putSchool: (state, school) => {
     school.Acronym = helpers.findAcronym(school);
     school.MascotPlural = helpers.makeMascotPlural(school.Mascot);
     school.MascotSingular = helpers.makeMascotSingular(school.Mascot);
-    state.data = { ...school };
+    state.school.data = { ...school };
     localStorage.setItem("school", JSON.stringify(school));
   },
 };
 
 const getters = {
   getSchool: (state) => {
-    if (state.data) {
-      return state.data;
+    console.log({ state });
+    if (state.school.data.Name) {
+      return state.school.data;
     } else {
       let school = localStorage.getItem("school");
       return JSON.parse(school);
